@@ -60,7 +60,12 @@ module hdmi
     // generating a signal from scratch instead of processing an
     // external signal.
     parameter int START_X = 0,
-    parameter int START_Y = 0
+    parameter int START_Y = 0,
+
+    parameter bit INVERT_CLK = 0,
+    parameter bit INVERT_D0 = 0,
+    parameter bit INVERT_D1 = 0,
+    parameter bit INVERT_D2 = 0
 )
 (
     input logic clk_pixel_x5,
@@ -370,6 +375,13 @@ generate
     end
 endgenerate
 
-serializer #(.NUM_CHANNELS(NUM_CHANNELS), .VIDEO_RATE(VIDEO_RATE)) serializer(.clk_pixel(clk_pixel), .clk_pixel_x5(clk_pixel_x5), .reset(reset), .tmds_internal(tmds_internal), .tmds(tmds), .tmds_clock(tmds_clock));
+serializer #(
+    .NUM_CHANNELS(NUM_CHANNELS),
+    .VIDEO_RATE(VIDEO_RATE),
+    .INVERT_CLK(INVERT_CLK),
+    .INVERT_D0(INVERT_D0),
+    .INVERT_D1(INVERT_D1),
+    .INVERT_D2(INVERT_D2)
+) serializer(.clk_pixel(clk_pixel), .clk_pixel_x5(clk_pixel_x5), .reset(reset), .tmds_internal(tmds_internal), .tmds(tmds), .tmds_clock(tmds_clock));
 
 endmodule

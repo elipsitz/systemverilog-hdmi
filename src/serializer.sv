@@ -1,7 +1,11 @@
 module serializer
 #(
     parameter int NUM_CHANNELS = 3,
-    parameter real VIDEO_RATE
+    parameter real VIDEO_RATE,
+    parameter bit INVERT_CLK = 0,
+    parameter bit INVERT_D0 = 0,
+    parameter bit INVERT_D1 = 0,
+    parameter bit INVERT_D2 = 0
 )
 (
     input logic clk_pixel,
@@ -19,7 +23,12 @@ module serializer
             logic tmds_plus_clock [NUM_CHANNELS:0];
             assign tmds_plus_clock = '{tmds_clock, tmds[2], tmds[1], tmds[0]};
             logic [9:0] tmds_internal_plus_clock [NUM_CHANNELS:0];
-            assign tmds_internal_plus_clock = '{10'b0000011111, tmds_internal[2], tmds_internal[1], tmds_internal[0]};
+            assign tmds_internal_plus_clock = '{
+                INVERT_CLK ? 10'b1111100000 : 10'b0000011111,
+                INVERT_D2 ? ~tmds_internal[2] : tmds_internal[2],
+                INVERT_D1 ? ~tmds_internal[1] : tmds_internal[1],
+                INVERT_D0 ? ~tmds_internal[0] : tmds_internal[0]
+            };
             logic [1:0] cascade [NUM_CHANNELS:0];
 
             // this is requried for OSERDESE2 to work
